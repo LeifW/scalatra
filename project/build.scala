@@ -166,7 +166,7 @@ object ScalatraBuild extends Build {
     .aggregate(scalatraCore, scalatraAuth, scalatraFileupload,
       scalatraScalate, scalatraSocketio, scalatraLiftJson, scalatraAntiXml,
       scalatraTest, scalatraScalatest, scalatraSpecs, scalatraSpecs2,
-      scalatraExample)
+      scalatraHelpers, scalatraExample)
 
   lazy val scalatraCore = Project("scalatra", file("core"),
     settings = scalatraSettings)
@@ -198,6 +198,16 @@ object ScalatraBuild extends Build {
         (sv, deps) => deps ++ Seq(scalate(sv), servletApi)
       },
       description := "Scalate integration with Scalatra")
+    .dependsOn(scalatraCore)
+    .testWithScalatraTest
+
+  lazy val scalatraHelpers = Project("scalatra-helpers", file("helpers"),
+    settings = scalatraSettings)
+    .settings(
+      libraryDependencies <<= (scalaVersion, libraryDependencies) {
+        (sv, deps) => deps ++ Seq(scalate(sv), servletApi)
+      },
+      description := "A collection of common shortcut helper methods")
     .dependsOn(scalatraCore)
     .testWithScalatraTest
 
